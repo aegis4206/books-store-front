@@ -64,6 +64,11 @@ export default function Header(props: HeaderProps) {
                         <> {section.title}</>
                     </Link>
                 ))}
+                <Link
+                    to={"/manage"}
+                >
+                    <> BookManage</>
+                </Link>
             </Toolbar>
         </React.Fragment>
     );

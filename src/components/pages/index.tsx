@@ -6,12 +6,12 @@ const Index = () => {
   const api = async () => {
 
 
-    const res = await fetch("http://127.0.0.1:8001/login", {
-      method: "POST",
-      body: JSON.stringify({
-        email: "white@white.white",
-        password: "123456"
-      })
+    const res = await fetch("http://127.0.0.1:8001/books/35", {
+      method: "PUT",
+      // body: JSON.stringify({
+      //   email: "white@white.white",
+      //   password: "123456"
+      // })
     })
     console.log("res", res)
     const data = await res.text()

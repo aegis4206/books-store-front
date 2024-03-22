@@ -14,7 +14,7 @@ import { loginAPI, registAPI } from '../../utils/fetchUrls';
 import React, { useEffect, useState } from 'react';
 
 import { useAtom } from "jotai";
-import { loadingAtom } from "../../states/loading";
+import { loadingAtom } from "../../states/global";
 
 const defaultTheme = createTheme();
 interface inputType {
@@ -57,9 +57,6 @@ export default function Login() {
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         setLoading(true)
         event.preventDefault();
-        // const data = new FormData(event.currentTarget);
-        // const email = data.get('email');
-        // const password = data.get('password');
         const { email, password } = formData
 
         // 信箱格式檢查

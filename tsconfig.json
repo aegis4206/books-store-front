@@ -13,7 +13,7 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
+    
     /* Linting */
     "strict": true,
     "noUnusedLocals": true,
@@ -22,6 +22,8 @@
 
     /* 取消大小寫判定 */
     // "forceConsistentCasingInFileNames": false
+    "noImplicitAny": false,
+
   },
   "include": ["src"],
   "references": [{ "path": "./tsconfig.node.json" }]
