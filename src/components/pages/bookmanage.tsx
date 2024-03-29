@@ -130,19 +130,35 @@ const Bookmanage = () => {
     }, [])
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        setLoading(true);
         event.preventDefault();
-        const { Id, Title, Author, Pyear, Price, Sales, Stock, ImgPath } = selectedBook;
-        console.log(Title, Author, Pyear, Price, Sales, Stock, ImgPath);
-        if (testEmpty()) return;
-        if (testNumber("Pyear") || testNumber("Price") || testNumber("Sales") || testNumber("Stock")) return;
+        const { Id } = selectedBook;
+        // console.log(Title, Author, Pyear, Price, Sales, Stock, ImgPath);
+        if (action != "deleteAll") {
+            if (testEmpty()) return;
+            if (testNumber("Pyear") || testNumber("Price") || testNumber("Sales") || testNumber("Stock")) return;
+        }
 
         const body = {
             ...selectedBook
         }
-        const res = Id ? await booksAPI.put(Id, body) : await booksAPI.post(body)
+        const API = {
+            edit: () => booksAPI.put(Id!, body),
+            add: () => booksAPI.post(body),
+            delete: () => booksAPI.delete(Id!),
+            deleteAll: () => booksAPI.deleteAll(checkboxSelected)
+        }
+        const content = {
+            edit: "編輯",
+            add: "新增",
+            delete: "刪除",
+            deleteAll: "刪除全部所選"
+        }
+        setLoading(true);
+
+        const res = await API[action]();
+        console.log(res)
         if (res.Code == 200) {
-            setSnackBarMessage(`${Id ? "編輯" : "新增"}書籍成功`)
+            setSnackBarMessage(`${content[action]}書籍成功`)
             setSnackBarTypeOpen("success")
             setOpen(false)
             fetchData()
