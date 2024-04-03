@@ -90,6 +90,11 @@ const Bookmanage = () => {
         const res = await booksAPI.get()
         if (res.Code == 200) {
             res.Data.length !== 0 && setBookList(res.Data)
+        } else {
+            setSnackBarMessage(`帳戶驗證已過期，請重新登入`)
+            setSnackBarTypeOpen("error")
+            setSnackBarOpen(true)
+
         }
     }
     useEffect(() => {

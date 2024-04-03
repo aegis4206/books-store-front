@@ -12,6 +12,8 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
 import { loginAPI, registAPI } from '../../utils/fetchUrls';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 import { useAtom } from "jotai";
 import { loadingAtom } from "../../states/global";
@@ -24,6 +26,8 @@ interface inputType {
 }
 
 export default function Login() {
+    const navigate = useNavigate();
+
     const [signUpMode, setSignUpMode] = useState<boolean>(false)
     const [message, setMessage] = useState<string>("")
     const [resCode, setResCode] = useState<number>(200)
@@ -93,6 +97,7 @@ export default function Login() {
         } else {
             localStorage.setItem('save', "false");
         }
+        if (res.Code == 200 && !signUpMode) navigate("/manage");
         // setLoading(false)
     };
 

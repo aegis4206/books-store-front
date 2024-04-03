@@ -1,10 +1,13 @@
 const { VITE_API_URL } = import.meta.env
 function FetchActions(url: string) {
     const fetchHandle = async (method: string, param?: string | number, body?: unknown) => {
-        console.log(body)
+        console.log("fetch")
         try {
             const res = await fetch(`${VITE_API_URL}${url}${param ? '/' + param.toString() : ''}`, {
-                method, body: body ? JSON.stringify(body) : null
+                method, body: body ? JSON.stringify(body) : null,
+                // 跨源需設定自動攜帶cookie
+                credentials: "include",
+
             });
             const data = await res.json();
             return data
