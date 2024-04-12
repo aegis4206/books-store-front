@@ -1,5 +1,5 @@
 import { atom } from "jotai";
-import { bookType } from "../tpye/tpye";
+import { bookType } from "../types/book";
 
 
 export const initBook: bookType = {

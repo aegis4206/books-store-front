@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Grid from '@mui/material/Grid';
@@ -10,11 +10,15 @@ import Bookmanage from './components/pages/bookmanage';
 import "./App.css"
 
 import { useAtom } from "jotai";
-import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom } from "./states/global";
+import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom, loginAtom } from "./states/global";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
 import Alert from '@mui/material/Alert';
+
+import { useCookies } from 'react-cookie';
+import { useNavigate, useLocation } from 'react-router-dom';
+
 
 const sections = [
   { title: 'one', url: '#' },
@@ -29,8 +33,31 @@ function App() {
   const [snackBarOpen, setSnackBarOpen] = useAtom(snackBarOpenAtom)
   const [snackBarMessage,] = useAtom(snackBarMessageAtom)
   const [snackBarType,] = useAtom(snackBarTypeAtom)
+  const [login, setLogin] = useAtom(loginAtom)
+
+  const [cookies] = useCookies(["SessionId", "Email", "Id"]);
+  const navigate = useNavigate();
+  const location = useLocation();
 
 
+  useEffect(() => {
+    if (cookies.SessionId != login.SessionId) {
+      const loginInfo = {
+        Email: cookies.Email,
+        Id: cookies.Id,
+        SessionId: cookies.SessionId,
+      }
+      setLogin(loginInfo)
+      console.log(loginInfo)
+    }
+  }, [])
+
+  useEffect(() => {
+    if (!cookies.SessionId) {
+      navigate("/login")
+    }
+
+  }, [location.pathname])
 
   return (
     <>
@@ -39,6 +66,7 @@ function App() {
         <Grid>
           <Routes>
             <Route path="/" element={<Index />} />
+            {!cookies.SessionId && <Route path="/login" element={<Login />} />}
             <Route path="/login" element={<Login />} />
             <Route path="/manage" element={<Bookmanage />} />
 

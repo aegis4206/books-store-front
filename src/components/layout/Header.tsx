@@ -1,15 +1,12 @@
 import * as React from 'react';
 import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import SearchIcon from '@mui/icons-material/Search';
 import Typography from '@mui/material/Typography';
 // import Link from '@mui/material/Link';
 import { Link, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 import { Modal, Box } from '@mui/material';
 import { logoutAPI } from '../../utils/fetchUrls';
-import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom } from "../../states/global";
+import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom, loginAtom, initLogin } from "../../states/global";
 import { useAtom } from "jotai";
 
 
@@ -35,7 +32,6 @@ const style = {
 };
 
 export default function Header(props: HeaderProps) {
-    const [cookies] = useCookies(["user", "user_name"]);
     const [open, setOpen] = React.useState(false)
     const navigate = useNavigate();
     const { sections, title } = props;
@@ -44,10 +40,12 @@ export default function Header(props: HeaderProps) {
     const [, setSnackBarOpen] = useAtom(snackBarOpenAtom)
     const [, setSnackBarMessage] = useAtom(snackBarMessageAtom)
     const [, setSnackBarTypeOpen] = useAtom(snackBarTypeAtom)
+    const [login, setLogin] = useAtom(loginAtom)
+
 
     React.useEffect(() => {
-        console.log(cookies)
-    }, [cookies])
+        console.log("login", login)
+    }, [login])
 
     const handleSubmit = async () => {
         setLoading(true)
@@ -57,6 +55,7 @@ export default function Header(props: HeaderProps) {
             setSnackBarMessage("登出成功")
             setSnackBarTypeOpen("success")
             setOpen(false)
+            setLogin(initLogin)
             navigate("/")
         } else {
             setSnackBarMessage(res.Msg)
@@ -70,7 +69,7 @@ export default function Header(props: HeaderProps) {
     return (
         <React.Fragment>
             <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                {cookies.user ? <div>{cookies.user_name}</div> : <Button size="small">White</Button>}
+                {login?.SessionId ? <div>{login.Email.split("@")[0]}</div> : <Button size="small">White</Button>}
                 <Typography
                     component="h2"
                     variant="h5"
@@ -87,10 +86,7 @@ export default function Header(props: HeaderProps) {
                     </Link>
 
                 </Typography>
-                <IconButton >
-                    <SearchIcon />
-                </IconButton>
-                {cookies.user ?
+                {login?.SessionId ?
                     <Button onClick={() => setOpen(true)} variant="outlined" size="small">
                         Sign Out
                     </Button> : <Link

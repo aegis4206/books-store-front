@@ -16,7 +16,7 @@ import { useNavigate } from 'react-router-dom';
 
 
 import { useAtom } from "jotai";
-import { loadingAtom } from "../../states/global";
+import { loadingAtom, loginAtom } from "../../states/global";
 
 const defaultTheme = createTheme();
 interface inputType {
@@ -32,6 +32,8 @@ export default function Login() {
     const [message, setMessage] = useState<string>("")
     const [resCode, setResCode] = useState<number>(200)
     const [, setLoading] = useAtom(loadingAtom)
+    const [, setLogin] = useAtom(loginAtom)
+
     const [helperText, setHelperText] = useState({
         email: '',
         password: ''
@@ -97,7 +99,11 @@ export default function Login() {
         } else {
             localStorage.setItem('save', "false");
         }
-        if (res.Code == 200 && !signUpMode) navigate("/manage");
+        if (res.Code == 200 && !signUpMode) {
+            console.log("設定登入資訊", res)
+            setLogin(res.Data)
+            navigate("/manage")
+        }
         // setLoading(false)
     };
 

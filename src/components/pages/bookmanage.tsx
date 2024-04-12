@@ -3,12 +3,12 @@ import React, { useEffect, useState, } from 'react'
 import { booksAPI } from '../../utils/fetchUrls'
 import Tables from '../tables'
 import { GridColDef } from '@mui/x-data-grid';
-import { bookType } from '../../tpye/tpye';
 import { useAtom } from "jotai";
 import { selectedBookAtom, initBook } from "../../states/books";
 import { checkboxSelectedAtom } from '../../states/table';
 import { loadingAtom, snackBarMessageAtom, snackBarOpenAtom, snackBarTypeAtom } from '../../states/global';
 import { positiveInteger } from '../../utils/validate';
+import { bookKeyChinese, bookType } from '../../types/book';
 
 const style = {
     position: 'absolute',
@@ -34,17 +34,17 @@ interface inputType {
     ImgPath: boolean,
     [key: string]: boolean
 }
-const bookKeyChinese = {
-    Id: '編號',
-    Title: '書名',
-    Author: '作者',
-    Pyear: '出版年份',
-    Price: '價格',
-    Sales: '銷量',
-    Stock: '庫存',
-    ImgPath: '封面圖片',
+// const bookKeyChinese = {
+//     Id: '編號',
+//     Title: '書名',
+//     Author: '作者',
+//     Pyear: '出版年份',
+//     Price: '價格',
+//     Sales: '銷量',
+//     Stock: '庫存',
+//     ImgPath: '封面圖片',
 
-}
+// }
 
 const MemoizedTables = React.memo(Tables);
 
@@ -87,15 +87,17 @@ const Bookmanage = () => {
 
 
     const fetchData = async () => {
+        setLoading(true)
         const res = await booksAPI.get()
         if (res.Code == 200) {
             res.Data.length !== 0 && setBookList(res.Data)
         } else {
-            setSnackBarMessage(`帳戶驗證已過期，請重新登入`)
+            setSnackBarMessage(res.Msg)
             setSnackBarTypeOpen("error")
             setSnackBarOpen(true)
 
         }
+        setLoading(false)
     }
     useEffect(() => {
         fetchData()
