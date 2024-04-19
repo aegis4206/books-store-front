@@ -10,10 +10,17 @@ export const initLogin = {
     Id: 0,
     SessionId: ''
 }
+interface snackbarType {
+    open: boolean,
+    message: string,
+    type: "success" | "info" | "warning" | "error"
+}
 
 export const loadingAtom = atom(false);
 export const loginAtom = atom<loginType>(initLogin);
-export const snackBarOpenAtom = atom(false);
-export const snackBarMessageAtom = atom("");
-export const snackBarTypeAtom = atom<"success" | "info" | "warning" | "error">("success");
+export const snackBarAtom = atom<snackbarType>({
+    open: false,
+    message: '',
+    type: "success"
+});
 

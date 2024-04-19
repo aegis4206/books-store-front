@@ -6,7 +6,7 @@ import { GridColDef } from '@mui/x-data-grid';
 import { useAtom } from "jotai";
 import { selectedBookAtom, initBook } from "../../states/books";
 import { checkboxSelectedAtom } from '../../states/table';
-import { loadingAtom, snackBarMessageAtom, snackBarOpenAtom, snackBarTypeAtom } from '../../states/global';
+import { loadingAtom, snackBarAtom, } from '../../states/global';
 import { positiveInteger } from '../../utils/validate';
 import { bookKeyChinese, bookType } from '../../types/book';
 
@@ -57,9 +57,9 @@ const Bookmanage = () => {
     const [action, setAction] = useState<string>("edit")
     const [checkboxSelected,] = useAtom(checkboxSelectedAtom)
     const [, setLoading] = useAtom(loadingAtom)
-    const [, setSnackBarOpen] = useAtom(snackBarOpenAtom)
-    const [, setSnackBarMessage] = useAtom(snackBarMessageAtom)
-    const [, setSnackBarTypeOpen] = useAtom(snackBarTypeAtom)
+
+    const [, setSnackBar] = useAtom(snackBarAtom)
+
 
 
 
@@ -92,10 +92,11 @@ const Bookmanage = () => {
         if (res.Code == 200) {
             res.Data.length !== 0 && setBookList(res.Data)
         } else {
-            setSnackBarMessage(res.Msg)
-            setSnackBarTypeOpen("error")
-            setSnackBarOpen(true)
-
+            setSnackBar({
+                message: res.Msg,
+                type: "error",
+                open: true
+            })
         }
         setLoading(false)
     }
@@ -165,15 +166,24 @@ const Bookmanage = () => {
         const res = await API[action]();
         console.log(res)
         if (res.Code == 200) {
-            setSnackBarMessage(`${content[action]}書籍成功`)
-            setSnackBarTypeOpen("success")
+            setSnackBar({
+                message: `${content[action]}書籍成功`,
+                type: "success",
+                open: false
+            })
             setOpen(false)
             fetchData()
         } else {
-            setSnackBarMessage(res.Msg)
-            setSnackBarTypeOpen("error")
+            setSnackBar({
+                message: res.Msg,
+                type: "error",
+                open: false
+            })
         }
-        setSnackBarOpen(true)
+        setSnackBar(pre => ({
+            ...pre,
+            open: true
+        }))
         setLoading(false)
     };
 

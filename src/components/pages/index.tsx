@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useCookies } from 'react-cookie';
 import { bookType } from '../../types/book';
 import { useAtom } from "jotai";
-import { loadingAtom, snackBarMessageAtom, snackBarOpenAtom, snackBarTypeAtom } from '../../states/global';
-import { booksAPI } from '../../utils/fetchUrls'
+import { loadingAtom, snackBarAtom, } from '../../states/global';
+import { booksAPI, cartAPI } from '../../utils/fetchUrls'
 
 import Grid from '@mui/material/Unstable_Grid2'; // Grid version 2
 import Card from '@mui/material/Card';
@@ -25,9 +25,8 @@ const Index = () => {
   const [pageNumbers, setPageNumbers] = useState<number[]>([])
 
   const [, setLoading] = useAtom(loadingAtom)
-  const [, setSnackBarOpen] = useAtom(snackBarOpenAtom)
-  const [, setSnackBarMessage] = useAtom(snackBarMessageAtom)
-  const [, setSnackBarTypeOpen] = useAtom(snackBarTypeAtom)
+
+  const [, setSnackBar] = useAtom(snackBarAtom)
 
   const fetchData = async () => {
     setLoading(true)
@@ -36,10 +35,11 @@ const Index = () => {
       res.Data.length !== 0 && setBookList(res.Data)
       pageNumbersHandle(res.Data)
     } else {
-      setSnackBarMessage(res.Msg)
-      setSnackBarTypeOpen("error")
-      setSnackBarOpen(true)
-
+      setSnackBar({
+        message: res.Msg,
+        type: "error",
+        open: true
+      })
     }
     setLoading(false)
   }
@@ -49,8 +49,17 @@ const Index = () => {
     fetchData()
   }, [cookies])
 
-  const addToCartHandle = (bookId?: number) => {
+  const addToCartHandle = async (bookId?: number) => {
     console.log(bookId)
+    // 加入購物車
+    const res = await cartAPI.getById(bookId!)
+    if (res.Code == 200) {
+      setSnackBar({
+        message: `${res.Data.Title} 圖書成功加入購物車`,
+        type: "success",
+        open: true
+      })
+    }
   }
 
   const pageNumbersHandle = (list: []) => {

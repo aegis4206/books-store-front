@@ -10,7 +10,7 @@ import Bookmanage from './components/pages/bookmanage';
 import "./App.css"
 
 import { useAtom } from "jotai";
-import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom, loginAtom } from "./states/global";
+import { loadingAtom, snackBarAtom, loginAtom } from "./states/global";
 import Backdrop from '@mui/material/Backdrop';
 import CircularProgress from '@mui/material/CircularProgress';
 import Snackbar from '@mui/material/Snackbar';
@@ -30,9 +30,8 @@ const sections = [
 
 function App() {
   const [loading,] = useAtom(loadingAtom)
-  const [snackBarOpen, setSnackBarOpen] = useAtom(snackBarOpenAtom)
-  const [snackBarMessage,] = useAtom(snackBarMessageAtom)
-  const [snackBarType,] = useAtom(snackBarTypeAtom)
+
+  const [snackBar, setSnackBar] = useAtom(snackBarAtom)
   const [login, setLogin] = useAtom(loginAtom)
 
   const [cookies] = useCookies(["SessionId", "Email", "Id"]);
@@ -53,11 +52,15 @@ function App() {
   }, [])
 
   useEffect(() => {
-    if (!cookies.SessionId) {
+    // console.log("path",location.pathname)
+    // console.log("cookie",cookies.SessionId)
+    if (!cookies.SessionId && location.pathname == "/manage") {
       navigate("/login")
+    } else if (cookies.SessionId && location.pathname == "/login") {
+      navigate("/manage")
     }
 
-  }, [location.pathname])
+  }, [location.pathname, cookies.SessionId])
 
   return (
     <>
@@ -86,17 +89,17 @@ function App() {
         <CircularProgress color="inherit" />
       </Backdrop>
       <Snackbar
-        open={snackBarOpen}
+        open={snackBar.open}
         autoHideDuration={5000}
-        onClose={() => setSnackBarOpen(false)}
+        onClose={() => setSnackBar(pre => ({ ...pre, open: false }))}
       >
         <Alert
-          onClose={() => setSnackBarOpen(false)}
-          severity={snackBarType}
+          onClose={() => setSnackBar(pre => ({ ...pre, open: false }))}
+          severity={snackBar.type}
           variant="filled"
           sx={{ width: '100%' }}
         >
-          {snackBarMessage}
+          {snackBar.message}
         </Alert>
       </Snackbar>
     </>

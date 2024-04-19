@@ -12,7 +12,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Alert from '@mui/material/Alert';
 import { loginAPI, registAPI } from '../../utils/fetchUrls';
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 
 
 import { useAtom } from "jotai";
@@ -26,7 +26,7 @@ interface inputType {
 }
 
 export default function Login() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
 
     const [signUpMode, setSignUpMode] = useState<boolean>(false)
     const [message, setMessage] = useState<string>("")
@@ -44,8 +44,8 @@ export default function Login() {
     })
     const [remember, setRemember] = useState<boolean>(false)
     const [formData, setFormData] = useState({
-        email: '',
-        password: ''
+        email: 'admin@admin.admin',
+        password: '123456'
     })
 
     useEffect(() => {
@@ -102,7 +102,7 @@ export default function Login() {
         if (res.Code == 200 && !signUpMode) {
             console.log("設定登入資訊", res)
             setLogin(res.Data)
-            navigate("/manage")
+            // navigate("/manage")
         }
         // setLoading(false)
     };

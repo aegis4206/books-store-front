@@ -6,7 +6,7 @@ import Typography from '@mui/material/Typography';
 import { Link, useNavigate } from 'react-router-dom';
 import { Modal, Box } from '@mui/material';
 import { logoutAPI } from '../../utils/fetchUrls';
-import { loadingAtom, snackBarOpenAtom, snackBarMessageAtom, snackBarTypeAtom, loginAtom, initLogin } from "../../states/global";
+import { loadingAtom, snackBarAtom, loginAtom, initLogin } from "../../states/global";
 import { useAtom } from "jotai";
 
 
@@ -37,9 +37,9 @@ export default function Header(props: HeaderProps) {
     const { sections, title } = props;
 
     const [, setLoading] = useAtom(loadingAtom)
-    const [, setSnackBarOpen] = useAtom(snackBarOpenAtom)
-    const [, setSnackBarMessage] = useAtom(snackBarMessageAtom)
-    const [, setSnackBarTypeOpen] = useAtom(snackBarTypeAtom)
+
+    const [, setSnackBar] = useAtom(snackBarAtom)
+
     const [login, setLogin] = useAtom(loginAtom)
 
 
@@ -52,16 +52,25 @@ export default function Header(props: HeaderProps) {
         const res = await logoutAPI.get()
         console.log(res)
         if (res.Code == 200) {
-            setSnackBarMessage("登出成功")
-            setSnackBarTypeOpen("success")
+            setSnackBar({
+                message: "登出成功",
+                type: "success",
+                open: false
+            })
             setOpen(false)
             setLogin(initLogin)
             navigate("/")
         } else {
-            setSnackBarMessage(res.Msg)
-            setSnackBarTypeOpen("error")
+            setSnackBar({
+                message: res.Msg,
+                type: "error",
+                open: false
+            })
         }
-        setSnackBarOpen(true)
+        setSnackBar(pre => ({
+            ...pre,
+            open: true
+        }))
         setLoading(false)
     }
 
