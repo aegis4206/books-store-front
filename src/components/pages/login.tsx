@@ -70,7 +70,7 @@ export default function Login() {
             formatErrHandle("email", "請輸入信箱")
             return
         } else {
-            const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/;
+            const reg = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{1,5})+$/;
             if (email && !reg.test(email.toString())) {
                 formatErrHandle("email", "信箱格式錯誤")
                 return

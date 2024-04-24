@@ -7,7 +7,7 @@ function Copyright() {
     return (
         <Typography variant="body2" color="text.secondary" align="center">
             {'Copyright © '}
-            <Link color="inherit" href="http://aegis4206.tplinkdns.com:8080/">
+            <Link color="inherit" href="http://aegis4206.tplinkdns.com/">
                 white
             </Link>{' '}
             {new Date().getFullYear()}

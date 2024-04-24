@@ -62,7 +62,6 @@ const Bookmanage = () => {
 
 
 
-
     const [helperText, setHelperText] = useState({
         Id: "",
         Title: "",
@@ -169,7 +168,7 @@ const Bookmanage = () => {
             setSnackBar({
                 message: `${content[action]}書籍成功`,
                 type: "success",
-                open: false
+                open: true
             })
             setOpen(false)
             fetchData()
@@ -177,13 +176,10 @@ const Bookmanage = () => {
             setSnackBar({
                 message: res.Msg,
                 type: "error",
-                open: false
+                open: true
             })
         }
-        setSnackBar(pre => ({
-            ...pre,
-            open: true
-        }))
+       
         setLoading(false)
     };
 

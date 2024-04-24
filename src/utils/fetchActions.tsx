@@ -27,10 +27,11 @@ function FetchActions(url: string) {
     const getById = withParamFetchAction("GET")
     const _delete = withParamFetchAction("DELETE")
     const deleteAll = postFetchAction("DELETE")
-
+    const deleteAllnoParam = getFetchAction("DELETE")
 
     const put = withParamBodyFetchAction("PUT")
     const patch = withParamBodyFetchAction("PATCH")
+
 
     return ({
         get,
@@ -39,7 +40,8 @@ function FetchActions(url: string) {
         put,
         patch,
         getById,
-        deleteAll
+        deleteAll,
+        deleteAllnoParam
     })
 }
 

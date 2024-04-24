@@ -4,7 +4,7 @@ import { useAtom } from "jotai";
 import { checkboxSelectedAtom } from '../states/table';
 
 export default function DataTable({ columns, rows }) {
-    const [, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
+    const [checkboxSelected, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
 
     const selectChangeHandle = (newSelectionModel: GridRowSelectionModel) => {
         // console.log('Selected rows:', newSelectionModel);
@@ -25,8 +25,12 @@ export default function DataTable({ columns, rows }) {
                 pageSizeOptions={[5, 10]}
                 checkboxSelection
                 onRowSelectionModelChange={selectChangeHandle}
-                getRowId={(row) => row.Id}
+                rowSelectionModel={checkboxSelected}
+                getRowId={(row) => row.Id | row.CartItemId}
+                localeText={{
+                    noRowsLabel:"尚未添加圖書"
+                }}
             />
-        </div>
+        </div >
     );
 }

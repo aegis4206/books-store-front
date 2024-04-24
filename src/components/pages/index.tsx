@@ -60,6 +60,13 @@ const Index = () => {
         open: true
       })
     }
+    else {
+      setSnackBar({
+        message: res.Msg,
+        type: "error",
+        open: true
+      })
+    }
   }
 
   const pageNumbersHandle = (list: []) => {

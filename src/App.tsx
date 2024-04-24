@@ -7,6 +7,7 @@ import { Routes, Route } from 'react-router-dom';
 import Login from './components/pages/login';
 import Index from './components/pages';
 import Bookmanage from './components/pages/bookmanage';
+import Cart from './components/pages/cart';
 import "./App.css"
 
 import { useAtom } from "jotai";
@@ -19,12 +20,11 @@ import Alert from '@mui/material/Alert';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-
 const sections = [
-  { title: 'one', url: '#' },
+  { title: 'Book', url: '/' },
   { title: 'two', url: '#' },
-  { title: 'ShopCart', url: '#' },
-  // { title: 'dropmenu', url: '#' },
+  { title: 'ShopCart', url: '/cart' },
+  { title: 'BookManage', url: '/manage' },
 
 ];
 
@@ -72,7 +72,7 @@ function App() {
             {!cookies.SessionId && <Route path="/login" element={<Login />} />}
             <Route path="/login" element={<Login />} />
             <Route path="/manage" element={<Bookmanage />} />
-
+            <Route path="/cart" element={<Cart />} />
           </Routes>
 
         </Grid>

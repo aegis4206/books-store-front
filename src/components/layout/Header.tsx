@@ -3,7 +3,7 @@ import Toolbar from '@mui/material/Toolbar';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 // import Link from '@mui/material/Link';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { Modal, Box } from '@mui/material';
 import { logoutAPI } from '../../utils/fetchUrls';
 import { loadingAtom, snackBarAtom, loginAtom, initLogin } from "../../states/global";
@@ -41,6 +41,7 @@ export default function Header(props: HeaderProps) {
     const [, setSnackBar] = useAtom(snackBarAtom)
 
     const [login, setLogin] = useAtom(loginAtom)
+    const location = useLocation();
 
 
     React.useEffect(() => {
@@ -117,14 +118,14 @@ export default function Header(props: HeaderProps) {
                         key={section.title}
                         to={section.url}
                     >
-                        <> {section.title}</>
+                        <Button variant={location.pathname == section.url ? "outlined" : undefined}> {section.title}</Button>
                     </Link>
                 ))}
-                <Link
+                {/* <Link
                     to={"/manage"}
                 >
                     <> BookManage</>
-                </Link>
+                </Link> */}
             </Toolbar>
             <Modal
                 open={open}
