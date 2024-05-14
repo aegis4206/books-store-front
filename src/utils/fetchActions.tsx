@@ -18,7 +18,7 @@ function FetchActions(url: string) {
     const getFetchAction = (method: string) => async () => fetchHandle(method);
     const postFetchAction = (method: string) => async (body: unknown) => fetchHandle(method, undefined, body);
     const withParamFetchAction = (method: string) => async (param: string | number) => fetchHandle(method, param);
-    const withParamBodyFetchAction = (method: string) => async (param: string | number, body: unknown) => fetchHandle(method, param, body);
+    const withParamBodyFetchAction = (method: string) => async (param: string | number | undefined, body: unknown) => fetchHandle(method, param, body);
 
     const get = getFetchAction("GET")
 

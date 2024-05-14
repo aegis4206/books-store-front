@@ -6,4 +6,5 @@ export interface cartListType {
     Count: string,
     Amount: string,
     Book: bookType
+    // [key: number]: string
 }

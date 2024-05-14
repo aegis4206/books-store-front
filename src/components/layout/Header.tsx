@@ -97,12 +97,12 @@ export default function Header(props: HeaderProps) {
 
                 </Typography>
                 {login?.SessionId ?
-                    <Button onClick={() => setOpen(true)} variant="outlined" size="small">
+                    <Button onClick={() => setOpen(true)} size="small">
                         Sign Out
                     </Button> : <Link
                         to="/login"
                     >
-                        <Button variant="outlined" size="small">
+                        <Button size="small">
                             Sign In
                         </Button>
                     </Link>}
@@ -118,7 +118,8 @@ export default function Header(props: HeaderProps) {
                         key={section.title}
                         to={section.url}
                     >
-                        <Button variant={location.pathname == section.url ? "outlined" : undefined}> {section.title}</Button>
+                        <Button 
+                        variant={location.pathname == section.url ? "outlined" : undefined}> {section.title}</Button>
                     </Link>
                 ))}
                 {/* <Link

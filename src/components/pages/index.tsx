@@ -107,9 +107,9 @@ const Index = () => {
               </CardContent>
             </CardActionArea>
             <CardActions >
-              <Button fullWidth onClick={() => addToCartHandle(book.Id)} size="small" color="primary">
+              {Number(book.Stock) > 10 ? <Button fullWidth onClick={() => addToCartHandle(book.Id)} size="small" color="primary">
                 <ShoppingCartIcon />
-              </Button>
+              </Button> : <Button fullWidth color="warning">已售完</Button>}
             </CardActions>
           </Card>
         </Grid>)}

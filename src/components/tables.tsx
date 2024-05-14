@@ -1,4 +1,3 @@
-import React from 'react';
 import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid';
 import { useAtom } from "jotai";
 import { checkboxSelectedAtom } from '../states/table';
@@ -7,7 +6,7 @@ export default function DataTable({ columns, rows }) {
     const [checkboxSelected, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
 
     const selectChangeHandle = (newSelectionModel: GridRowSelectionModel) => {
-        // console.log('Selected rows:', newSelectionModel);
+        console.log('Selected rows:', newSelectionModel);
         setCheckboxSelected(newSelectionModel)
     }
 

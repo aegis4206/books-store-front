@@ -251,6 +251,13 @@ const Bookmanage = () => {
         return false
     }
 
+    const test = async ()=>{
+        fetch("http://192.168.6.87:8001/userorders", {
+            // 跨源需設定自動攜帶cookie
+            credentials: "include",
+        })
+    }
+
     return (
         <>
             <Grid container spacing={2}>
@@ -334,6 +341,7 @@ const Bookmanage = () => {
                     </Typography>
                 </Box>
             </Modal >
+            <Button onClick={test}>test</Button>
         </>
 
     )

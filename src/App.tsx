@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import Header from './components/layout/Header'
 import Footer from './components/layout/Footer'
 import Grid from '@mui/material/Grid';
@@ -9,6 +9,9 @@ import Index from './components/pages';
 import Bookmanage from './components/pages/bookmanage';
 import Cart from './components/pages/cart';
 import "./App.css"
+import Orders from './components/pages/orders';
+
+
 
 import { useAtom } from "jotai";
 import { loadingAtom, snackBarAtom, loginAtom } from "./states/global";
@@ -22,9 +25,10 @@ import { useNavigate, useLocation } from 'react-router-dom';
 
 const sections = [
   { title: 'Book', url: '/' },
-  { title: 'two', url: '#' },
-  { title: 'ShopCart', url: '/cart' },
-  { title: 'BookManage', url: '/manage' },
+  { title: 'Cart', url: '/cart' },
+  { title: 'Order', url: '/orders' },
+  { title: 'BookManage', url: '/bmanage' },
+  { title: 'OrderManage', url: '/omanage' },
 
 ];
 
@@ -54,10 +58,10 @@ function App() {
   useEffect(() => {
     // console.log("path",location.pathname)
     // console.log("cookie",cookies.SessionId)
-    if (!cookies.SessionId && location.pathname == "/manage") {
+    if (!cookies.SessionId && (location.pathname == "/bmanage" || location.pathname == "/omanage" || location.pathname == "/orders")) {
       navigate("/login")
     } else if (cookies.SessionId && location.pathname == "/login") {
-      navigate("/manage")
+      navigate("/")
     }
 
   }, [location.pathname, cookies.SessionId])
@@ -71,8 +75,10 @@ function App() {
             <Route path="/" element={<Index />} />
             {!cookies.SessionId && <Route path="/login" element={<Login />} />}
             <Route path="/login" element={<Login />} />
-            <Route path="/manage" element={<Bookmanage />} />
+            <Route path="/bmanage" element={<Bookmanage />} />
             <Route path="/cart" element={<Cart />} />
+            <Route path="/omanage" element={<></>} />
+            <Route path="/orders" element={<Orders />} />
           </Routes>
 
         </Grid>

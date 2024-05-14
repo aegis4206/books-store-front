@@ -9,3 +9,6 @@ export const registAPI = fetchActions("regist")
 export const booksAPI = fetchActions("books")
 
 export const cartAPI = fetchActions("cart")
+
+export const checkoutAPI = fetchActions("checkout")
+
