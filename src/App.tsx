@@ -10,6 +10,7 @@ import Bookmanage from './components/pages/bookmanage';
 import Cart from './components/pages/cart';
 import "./App.css"
 import Orders from './components/pages/orders';
+import Ordermanage from './components/pages/ordermanage';
 
 
 
@@ -74,10 +75,10 @@ function App() {
           <Routes>
             <Route path="/" element={<Index />} />
             {!cookies.SessionId && <Route path="/login" element={<Login />} />}
-            <Route path="/login" element={<Login />} />
+            {/* <Route path="/login" element={<Login />} /> */}
             <Route path="/bmanage" element={<Bookmanage />} />
             <Route path="/cart" element={<Cart />} />
-            <Route path="/omanage" element={<></>} />
+            <Route path="/omanage" element={<Ordermanage />} />
             <Route path="/orders" element={<Orders />} />
           </Routes>
 

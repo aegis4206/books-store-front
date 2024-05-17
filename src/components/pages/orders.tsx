@@ -1,22 +1,17 @@
-import { Button, Grid, Modal, Box, Typography, TextField } from '@mui/material'
+import { Button, Modal, Box, Typography, Chip, List, ListItem, ListItemAvatar, ListItemText, Avatar, Tab, Tabs } from '@mui/material'
 import React, { useEffect, useState, } from 'react'
-import { booksAPI } from '../../utils/fetchUrls'
-import Tables from '../tables'
-import { GridColDef } from '@mui/x-data-grid';
+import { userOrdersAPI, updateOrderAPI } from '../../utils/fetchUrls'
 import { useAtom } from "jotai";
-import { selectedBookAtom, initBook } from "../../states/books";
-import { checkboxSelectedAtom } from '../../states/table';
 import { loadingAtom, snackBarAtom, } from '../../states/global';
-import { positiveInteger } from '../../utils/validate';
-import { bookKeyChinese, bookType } from '../../types/book';
-import InfoIcon from '@mui/icons-material/Info';
+import { orderType } from '../../types/order';
+import OrderItemList from '../order/ItemList';
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '60%',
+    width: '80%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
@@ -24,73 +19,25 @@ const style = {
     borderRadius: "10px"
 };
 
-interface inputType {
-    Id: boolean,
-    Title: boolean,
-    Author: boolean,
-    Pyear: boolean,
-    Price: boolean,
-    Sales: boolean,
-    Stock: boolean,
-    ImgPath: boolean,
-    [key: string]: boolean
-}
-// const bookKeyChinese = {
-//     Id: '編號',
-//     Title: '書名',
-//     Author: '作者',
-//     Pyear: '出版年份',
-//     Price: '價格',
-//     Sales: '銷量',
-//     Stock: '庫存',
-//     ImgPath: '封面圖片',
 
-// }
-
-const MemoizedTables = React.memo(Tables);
 
 
 const Bookmanage = () => {
-    const [columns, setColumns] = useState<GridColDef[]>([])
-    const [bookList, setBookList] = useState<bookType[]>([])
-    const [selectedBook, setSelectedBook] = useAtom(selectedBookAtom)
+    const [orderList, setOrderList] = useState<orderType[]>([])
     const [open, setOpen] = useState(false);
-    const [action, setAction] = useState<string>("edit")
-    const [checkboxSelected, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
+    const [action, setAction] = useState('')
+    const [selectedOrder, setSelectedOrder] = useState<orderType>()
+
     const [, setLoading] = useAtom(loadingAtom)
 
     const [, setSnackBar] = useAtom(snackBarAtom)
 
 
-
-    const [helperText, setHelperText] = useState({
-        Id: "",
-        Title: "",
-        Author: "",
-        Pyear: "",
-        Price: "",
-        Sales: "",
-        Stock: "",
-        ImgPath: "",
-    })
-    const [inputError, setInputError] = useState<inputType>({
-        Id: false,
-        Title: false,
-        Author: false,
-        Pyear: false,
-        Price: false,
-        Sales: false,
-        Stock: false,
-        ImgPath: false,
-    })
-
-
-
     const fetchData = async () => {
         setLoading(true)
-        const res = await booksAPI.get()
+        const res = await userOrdersAPI.get()
         if (res.Code == 200) {
-            res.Data.length !== 0 && setBookList(res.Data)
+            res.Data.length !== 0 && setOrderList(res.Data)
         } else {
             setSnackBar({
                 message: res.Msg,
@@ -104,81 +51,18 @@ const Bookmanage = () => {
     useEffect(() => {
         fetchData()
 
-        const columnsInit: GridColDef[] = [
-            { field: 'Id', headerName: '編號', width: 70 },
-            { field: 'Title', headerName: '書名', width: 200 },
-            { field: 'Author', headerName: '作者', width: 150 },
-            { field: 'Pyear', headerName: '出版年份', },
-            { field: 'Price', headerName: '價格', },
-            { field: 'Sales', headerName: '銷量', },
-            { field: 'Stock', headerName: '庫存', },
-            { field: 'ImgPath', headerName: '封面圖片', },
-            {
-                field: '',
-                headerName: '操作',
-                width: 160,
-                renderCell: (param) => (
-                    <>
-                        <Button
-                            sx={{ marginRight: "5px" }}
-                            variant='outlined'
-                            color='info' onClick={(event) => {
-                                event.stopPropagation();
-                                setSelectedBook(param.row)
-                                setOpen(true)
-                                setAction("edit")
-                            }}>編輯</Button>
-                        <Button
-                            variant='outlined'
-                            color='error' onClick={(event) => {
-                                event.stopPropagation();
-                                setSelectedBook(param.row)
-                                setOpen(true)
-                                setAction("delete")
-                            }}>刪除</Button>
-                    </>
-                ),
-            },
-        ]
-        setColumns(columnsInit)
-
-        return () => {
-            setCheckboxSelected([])
-        }
     }, [])
 
 
-    const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
-        event.preventDefault();
-        const { Id } = selectedBook;
-        // console.log(Title, Author, Pyear, Price, Sales, Stock, ImgPath);
-        if (action != "deleteAll") {
-            if (testEmpty()) return;
-            if (testNumber("Pyear") || testNumber("Price") || testNumber("Sales") || testNumber("Stock")) return;
-        }
+    const handleSubmit = async () => {
+        if (action == "detail") return setOpen(false);
 
-        const body = {
-            ...selectedBook
-        }
-        const API = {
-            edit: () => booksAPI.put(undefined, body),
-            add: () => booksAPI.post(body),
-            delete: () => booksAPI.delete(Id!),
-            deleteAll: () => booksAPI.deleteAll(checkboxSelected)
-        }
-        const content = {
-            edit: "編輯",
-            add: "新增",
-            delete: "刪除",
-            deleteAll: "刪除全部所選"
-        }
         setLoading(true);
-
-        const res = await API[action]();
+        const res = await updateOrderAPI.patch(selectedOrder?.OrderId, { State: "2" })
         console.log(res)
         if (res.Code == 200) {
             setSnackBar({
-                message: `${content[action]}書籍成功`,
+                message: `訂單已完成`,
                 type: "success",
                 open: true
             })
@@ -191,157 +75,97 @@ const Bookmanage = () => {
                 open: true
             })
         }
-
         setLoading(false)
     };
 
-    const resetHandle = (target: string, e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedBook(pre => ({ ...pre, [target]: e.target.value }))
-        if (inputError[target] == false) return;
-        setHelperText(pre => ({ ...pre, [target]: "" }))
-        setInputError(pre => ({ ...pre, [target]: false }))
+    const clickHandle = (action: string) => (order: orderType) => {
+        setAction(action);
+        setSelectedOrder(order);
+        setOpen(true);
     }
+    // const detailClick = clickHandle("detail")
+    // const confirmClick = clickHandle("confirm")
 
-    const formatErrHandle = (target: string, msg: string) => {
-        setHelperText(pre => ({ ...pre, [target]: msg }))
-        setInputError(pre => ({ ...pre, [target]: true }))
-        // setLoading(false)
-    }
 
-    const form = Object.keys(bookKeyChinese).map(key => {
-        return <Grid item xs={6} key={key}>
-            <TextField
-                key={key}
-                disabled={key == 'Id'}
-                margin="normal"
-                required={key != 'Id'}
-                fullWidth
-                name={key}
-                label={bookKeyChinese[key]}
-                // type={key}
-                id={key}
-                error={inputError[key]}
-                helperText={helperText[key]}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => resetHandle(key, e)}
-                value={selectedBook[key]}
-            />
-        </Grid>
+    //Tabs
+    const [value, setValue] = React.useState('all');
+    const handleChange = (event: React.SyntheticEvent, newValue: string) => {
+        setValue(newValue);
+    };
+    const listfilter = orderList.filter(item => {
+        switch (value) {
+            case "noShipped":
+                return item.State == 0
+            case "shipped":
+                return item.State == 1
+            case "complete":
+                return item.State == 2
+            default:
+                return true
+        }
     })
-
-    const testEmpty = () => {
-        const res: string[] = []
-        Object.keys(selectedBook).forEach(key => {
-            if (selectedBook[key] == "") {
-                res.push(key)
-            }
-        })
-        if (res.length !== 0) {
-            res.forEach(key => {
-                formatErrHandle(key, `請輸入${bookKeyChinese[key]}`)
-            })
-            return true
-        }
-        return false
-    }
-    const testNumber = (key: string) => {
-        if (positiveInteger(selectedBook[key])) {
-            formatErrHandle(key, `格式錯誤`)
-            return true
-        }
-        return false
-    }
-
-    const test = async ()=>{
-        fetch("http://192.168.6.87:8001/userorders", {
-            // 跨源需設定自動攜帶cookie
-            credentials: "include",
-        })
-    }
 
     return (
         <>
-            <Grid container spacing={2}>
-                <Grid item xs={12}>
-                    <Button
-                        sx={{ marginRight: "5px" }}
-                        variant='outlined'
-                        onClick={() => {
-                            setSelectedBook(initBook)
-                            setOpen(true)
-                            setAction("add")
-                        }}>新增書籍</Button>
-                    <Button
-                        sx={{ marginRight: "5px" }}
-                        variant='outlined'
-                        color='warning'
-                        disabled={checkboxSelected.length == 0}
-                        onClick={() => {
-                            setOpen(true)
-                            setAction("deleteAll")
-                        }}>刪除全部所選</Button>
-                    <span className='text-sm text-neutral-400'>
-                        <InfoIcon color='warning' />
-                        安全庫存為10本，低於時即不再販售顯示已售光
-                    </span>
-                </Grid>
-                <Grid item xs={12}>
-                    <MemoizedTables
-                        columns={columns}
-                        rows={bookList}
-                    ></MemoizedTables>
-                </Grid>
-            </Grid>
+            <Box sx={{ width: '100%' }}>
+                <Tabs
+                    value={value}
+                    onChange={handleChange}
+                    variant='fullWidth'
+                    indicatorColor="secondary"
+                    textColor="secondary"
+                >
+                    <Tab value="all" label="全部" />
+                    <Tab value="noShipped" label="未發貨" />
+                    <Tab value="shipped" label="已發貨" />
+                    <Tab value="complete" label="已完成" />
+                </Tabs>
+            </Box>
+            <OrderItemList orderList={listfilter} clickHandle={clickHandle}></OrderItemList>
             <Modal
                 open={open}
                 onClose={() => setOpen(false)}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
-                <Box sx={style} component="form" onSubmit={handleSubmit} noValidate>
-                    {(action == "add" || action == "edit") && <>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            {action == "edit" ? "編輯書籍" : "新增書籍"}
-                        </Typography>
-                        <Grid container spacing={2}>
-                            {form}
-                            <Grid item xs={6}>
+                <Box sx={style}>
+                    {action == "confirm" && <Typography id="modal-modal-title" variant="h6" component="h2">
+                        請確認收到商品無誤
+                    </Typography>}
+                    {
+                        action == "detail" && <>
+                            <Chip variant='outlined' size='small' label={`${selectedOrder?.State == 0 ? "未發貨" : selectedOrder?.State == 1 ? "已發貨" : "已完成"}`} color={`${selectedOrder?.State == 0 ? "default" : selectedOrder?.State == 1 ? "info" : "success"}`} sx={{ marginRight: "5px" }} />
+                            訂單編號 : {selectedOrder?.OrderId}
+                            <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+                                {
+                                    selectedOrder?.OrderItems.map(orderItem => <ListItem sx={{ padding: 0 }} key={orderItem.OrderItemId}>
+                                        <ListItemAvatar>
+                                            <Avatar>
+                                                <img src={`https://source.unsplash.com/40x40/?book&rnd=${orderItem.OrderItemId}`} alt='book'></img>
+                                            </Avatar>
+                                        </ListItemAvatar>
+                                        <ListItemText primary={`${orderItem.Title} - ${orderItem.Author}`}
+                                            secondary={`${orderItem.Count}本 單價$${orderItem.Price} 共$${orderItem.Amount}`} />
+                                    </ListItem>
+                                    )
+                                }
+                            </List >
+                            共{selectedOrder?.TotalCount}本 ${selectedOrder?.TotalAmount}元
+                        </>
+                    }
 
-                            </Grid>
-                        </Grid>
-                    </>}
-
-                    {action == "delete" && <>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            刪除書籍
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            確定要刪除 編號 : {selectedBook!.Id} 書名 : {selectedBook!.Title}
-                        </Typography>
-
-                    </>}
-                    {action == "deleteAll" && <>
-                        <Typography id="modal-modal-title" variant="h6" component="h2">
-                            刪除書籍
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            確定要刪除全部所選籍籍 編號 : {checkboxSelected.join('、')}
-                        </Typography>
-                        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                            全部所選籍籍共 : {checkboxSelected.length} 筆
-                        </Typography>
-                    </>}
                     <Typography id="modal-modal-description" sx={{ mt: 2 }}>
                         <Button
                             sx={{ marginRight: "5px" }}
                             variant='outlined'
-                            type="submit" color={action == "edit" ? 'info' : 'error'}>確定</Button>
+                            color={'secondary'}
+                            onClick={() => handleSubmit()}>確定</Button>
                         <Button
                             variant='outlined'
                             onClick={() => setOpen(false)}>取消</Button>
                     </Typography>
                 </Box>
             </Modal >
-            <Button onClick={test}>test</Button>
         </>
 
     )

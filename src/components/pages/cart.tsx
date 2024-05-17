@@ -16,7 +16,7 @@ const style = {
   top: '50%',
   left: '50%',
   transform: 'translate(-50%, -50%)',
-  width: '60%',
+  width: '80%',
   bgcolor: 'background.paper',
   border: '2px solid #000',
   boxShadow: 24,
@@ -58,7 +58,7 @@ const Cart = () => {
       const filterStockLiimit = res.Data.filter(item => Number(item.Book.Stock) > 10)
       // console.log("filterStockLiimit", filterStockLiimit)
       setCartList(filterStockLiimit)
-      
+
       // tempList = res.Data
     } else {
       setSnackBar({
@@ -183,22 +183,24 @@ const Cart = () => {
   //   })
   // }
   const checkOutListHandle = () => {
-    return <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
-      {
-        checkboxSelected.map(cartItemId => {
-          const index = cartList.findIndex(item => item.CartItemId == cartItemId)
-          return <ListItem key={cartItemId}>
-            <ListItemAvatar>
-              <Avatar>
-                <img src={`https://source.unsplash.com/40x40/?book&rnd=${cartItemId}`} alt='book'></img>
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={`${cartList[index].Book.Title} - ${cartList[index].Book.Author}`}
-              secondary={`${cartList[index].Count}本 單價$${cartList[index].Book.Price} 共$${cartList[index].Amount}`} />
-          </ListItem>
-        })
-      }
-    </List >
+    return <>
+      <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+        {
+          checkboxSelected.map(cartItemId => {
+            const index = cartList.findIndex(item => item.CartItemId == cartItemId)
+            return <ListItem sx={{ padding: 0 }} key={cartItemId}>
+              <ListItemAvatar>
+                <Avatar>
+                  <img src={`https://source.unsplash.com/40x40/?book&rnd=${cartItemId}`} alt='book'></img>
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={`${cartList[index].Book.Title} - ${cartList[index].Book.Author}`}
+                secondary={`${cartList[index].Count}本 單價$${cartList[index].Book.Price} 共$${cartList[index].Amount}`} />
+            </ListItem>
+          })
+        }
+      </List >
+    </>
   }
 
   const totalPrice = checkboxSelected.reduce((acc: number, currCheckboxId) => {
@@ -252,7 +254,7 @@ const Cart = () => {
           {/* <Chip label={`總金額 : $ ${cartList.reduce((acc, curr) => acc + Number(curr.Amount), 0)}`} color="success" /> */}
         </div>
         <Button color='error'
-          variant='outlined'
+          variant='contained'
           onClick={() => {
             setOpen(true)
             setAction("deleteCart")
@@ -272,7 +274,7 @@ const Cart = () => {
             <ItemList cartList={cartList} countChangeHandle={countChangeHandle} handleDelete={handleDelete} />
           </>
           :
-          <div className='text-center'>尚未添加圖書</div>
+          <Typography align='center' variant='h6' color="orangered">尚未添加圖書</Typography>
       }
       <Modal
         open={open}
@@ -287,11 +289,11 @@ const Cart = () => {
           {action == "deleteCartItem" && `確定要刪除 "${deleteTarget?.Book?.Author} - ${deleteTarget?.Book?.Title}" 圖書嗎?`}
           {action == "checkOut" && <>
             {checkOutListHandle()}
-            <div className='px-4'>共 ${totalPrice}</div>
+            <div>共 ${totalPrice}</div>
           </>}
           <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-            <Button type="submit" color='error'>確定</Button>
-            <Button onClick={() => setOpen(false)}>取消</Button>
+            <Button sx={{ marginRight: "5px" }} variant='outlined' type="submit" color='error'>確定</Button>
+            <Button variant='outlined' onClick={() => setOpen(false)}>取消</Button>
           </Typography>
         </Box>
       </Modal >

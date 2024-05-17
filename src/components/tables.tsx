@@ -2,12 +2,12 @@ import { DataGrid, GridRowSelectionModel } from '@mui/x-data-grid';
 import { useAtom } from "jotai";
 import { checkboxSelectedAtom } from '../states/table';
 
-export default function DataTable({ columns, rows }) {
+export default function DataTable({ columns, rows, checkbox = true }) {
     const [checkboxSelected, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
 
     const selectChangeHandle = (newSelectionModel: GridRowSelectionModel) => {
-        console.log('Selected rows:', newSelectionModel);
-        setCheckboxSelected(newSelectionModel)
+        // console.log('Selected rows:', newSelectionModel);
+        if (checkbox) setCheckboxSelected(newSelectionModel);
     }
 
 
@@ -22,12 +22,12 @@ export default function DataTable({ columns, rows }) {
                     },
                 }}
                 pageSizeOptions={[5, 10]}
-                checkboxSelection
+                checkboxSelection={checkbox}
                 onRowSelectionModelChange={selectChangeHandle}
                 rowSelectionModel={checkboxSelected}
-                getRowId={(row) => row.Id | row.CartItemId}
+                getRowId={(row) => row.Id || row.CartItemId || row.OrderId}
                 localeText={{
-                    noRowsLabel:"尚未添加圖書"
+                    noRowsLabel: "尚未添加圖書"
                 }}
             />
         </div >

@@ -12,3 +12,8 @@ export const cartAPI = fetchActions("cart")
 
 export const checkoutAPI = fetchActions("checkout")
 
+export const ordersAPI = fetchActions("orders")
+export const userOrdersAPI = fetchActions("userorders")
+
+export const updateOrderAPI = fetchActions("order")
+

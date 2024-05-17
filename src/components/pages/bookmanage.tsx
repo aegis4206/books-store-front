@@ -257,7 +257,7 @@ const Bookmanage = () => {
                 <Grid item xs={12}>
                     <Button
                         sx={{ marginRight: "5px" }}
-                        variant='outlined'
+                        variant='contained'
                         onClick={() => {
                             setSelectedBook(initBook)
                             setOpen(true)
@@ -265,7 +265,7 @@ const Bookmanage = () => {
                         }}>新增書籍</Button>
                     <Button
                         sx={{ marginRight: "5px" }}
-                        variant='outlined'
+                        variant='contained'
                         color='warning'
                         disabled={checkboxSelected.length == 0}
                         onClick={() => {
