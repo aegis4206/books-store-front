@@ -8,7 +8,7 @@ import Tables from '../tables'
 
 import { checkboxSelectedAtom } from '../../states/table';
 import { GridColDef } from '@mui/x-data-grid';
-import { Button, Modal, Box, Typography, Chip, Container, Switch, FormControlLabel, Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar } from '@mui/material';
+import { Button, Modal, Box, Typography, Chip, Container, Switch, FormControlLabel, Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar,  } from '@mui/material';
 import ItemList from '../cart/ItemList';
 
 const style = {

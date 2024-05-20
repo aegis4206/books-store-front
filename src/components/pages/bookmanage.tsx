@@ -272,10 +272,10 @@ const Bookmanage = () => {
                             setOpen(true)
                             setAction("deleteAll")
                         }}>刪除全部所選</Button>
-                    <span className='text-sm text-neutral-400'>
+                    <div className='text-sm text-neutral-400 mt-2'>
                         <InfoIcon color='warning' />
                         安全庫存為10本，低於時即不再販售顯示已售光
-                    </span>
+                    </div>
                 </Grid>
                 <Grid item xs={12}>
                     <MemoizedTables

@@ -7,6 +7,7 @@ import { useAtom } from "jotai";
 import { loadingAtom, snackBarAtom, } from '../../states/global';
 import { orderType } from '../../types/order';
 import moment from 'moment';
+// import { checkboxSelectedAtom } from '../../states/table';
 
 const style = {
     position: 'absolute',
@@ -34,6 +35,9 @@ const Ordermanage = () => {
     const [, setLoading] = useAtom(loadingAtom)
 
     const [, setSnackBar] = useAtom(snackBarAtom)
+
+    // const [, setCheckboxSelected] = useAtom(checkboxSelectedAtom)
+
 
 
     const fetchData = async () => {
@@ -154,9 +158,9 @@ const Ordermanage = () => {
             <Grid container spacing={2}>
                 <Grid item xs={12}>
                     <MemoizedTables
-                        checkbox={false}
                         columns={columns}
                         rows={orderList}
+                        checkbox={false}
                     ></MemoizedTables>
                 </Grid>
             </Grid>
