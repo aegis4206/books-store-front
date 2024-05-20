@@ -40,7 +40,7 @@ const Ordermanage = () => {
         setLoading(true)
         const res = await ordersAPI.get()
         if (res.Code == 200) {
-            res.Data.length !== 0 && setOrderList(res.Data)
+            res.Data && res.Data.length !== 0 && setOrderList(res.Data)
             console.log(res.Data)
         } else {
             setSnackBar({

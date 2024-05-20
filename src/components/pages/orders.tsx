@@ -37,7 +37,7 @@ const Bookmanage = () => {
         setLoading(true)
         const res = await userOrdersAPI.get()
         if (res.Code == 200) {
-            res.Data.length !== 0 && setOrderList(res.Data)
+            res.Data && res.Data.length !== 0 && setOrderList(res.Data)
         } else {
             setSnackBar({
                 message: res.Msg,
