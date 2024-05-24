@@ -69,13 +69,23 @@ const Bookmanage = () => {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
+            const validImageTypes = ['image/jpeg', 'image/png'];
+            if (validImageTypes.includes(file.type)) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
 
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
+                reader.onloadend = () => {
+                    setbase64Pic(reader.result as string);
+                };
+            } else {
+                setSnackBar({
+                    message: "請選擇正確的圖片格式",
+                    type: "error",
+                    open: true
+                })
+            }
 
-            reader.onloadend = () => {
-                setbase64Pic(reader.result as string);
-            };
+
 
         }
     };
@@ -171,15 +181,15 @@ const Bookmanage = () => {
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
-        console.log("上傳")
         const { Id } = selectedBook;
         // console.log(Title, Author, Pyear, Price, Sales, Stock, ImgPath);
         if (action != "deleteAll") {
             if (testEmpty()) return;
             if (testNumber("Pyear") || testNumber("Price") || testNumber("Sales") || testNumber("Stock")) return;
         }
-        const ImgPath = action == "add" ? (base64Pic ? base64Split(base64Pic) : null) :
-            action == "edit" ? (base64Pic ? base64Split(base64Pic) : base64Split(selectedBook.ImgPath ? selectedBook.ImgPath : "")) : null
+        const ImgPath = action == "add" ?
+            (base64Pic ? base64Split(base64Pic) : "") :
+            (action == "edit" && (base64Pic ? base64Split(base64Pic) : ""))
 
         const body = {
             ...selectedBook,
