@@ -82,7 +82,7 @@ const ItemList = ({ cartList, countChangeHandle, handleDelete }: propsType) => {
                         <Checkbox checked={checkboxList[item.CartItemId]} onChange={() => checkboxChangeHandle(item.CartItemId)}></Checkbox>
                         <CardMedia
                             component="img"
-                            image={`https://source.unsplash.com/100x100/?book&rnd=${item.CartItemId}`}
+                            image={item.Book.ImgPath ? `${import.meta.env.VITE_API_URL}bookimg/${item.Book.ImgPath}` : `https://source.unsplash.com/100x100/?book&rnd=${item.CartItemId}`}
                             alt={item.Book.Title}
                             sx={{ width: "100px", height: "100px", alignSelf: "center" }}
                         />

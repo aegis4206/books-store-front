@@ -1,5 +1,5 @@
-import { Button, Grid, Modal, Box, Typography, TextField } from '@mui/material'
-import React, { useEffect, useState, } from 'react'
+import { Button, Grid, Modal, Box, Typography, TextField, } from '@mui/material'
+import React, { useEffect, useState } from 'react'
 import { booksAPI } from '../../utils/fetchUrls'
 import Tables from '../tables'
 import { GridColDef } from '@mui/x-data-grid';
@@ -10,19 +10,33 @@ import { loadingAtom, snackBarAtom, } from '../../states/global';
 import { positiveInteger } from '../../utils/validate';
 import { bookKeyChinese, bookType } from '../../types/book';
 import InfoIcon from '@mui/icons-material/Info';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import { styled } from '@mui/material/styles';
 
 const style = {
     position: 'absolute',
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: '60%',
+    width: '90%',
     bgcolor: 'background.paper',
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
     borderRadius: "10px"
 };
+
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
 
 interface inputType {
     Id: boolean,
@@ -35,17 +49,6 @@ interface inputType {
     ImgPath: boolean,
     [key: string]: boolean
 }
-// const bookKeyChinese = {
-//     Id: '編號',
-//     Title: '書名',
-//     Author: '作者',
-//     Pyear: '出版年份',
-//     Price: '價格',
-//     Sales: '銷量',
-//     Stock: '庫存',
-//     ImgPath: '封面圖片',
-
-// }
 
 const MemoizedTables = React.memo(Tables);
 
@@ -61,7 +64,21 @@ const Bookmanage = () => {
 
     const [, setSnackBar] = useAtom(snackBarAtom)
 
+    const [base64Pic, setbase64Pic] = useState<string | null>(null);
 
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+
+            reader.onloadend = () => {
+                setbase64Pic(reader.result as string);
+            };
+
+        }
+    };
 
     const [helperText, setHelperText] = useState({
         Id: "",
@@ -112,7 +129,7 @@ const Bookmanage = () => {
             { field: 'Price', headerName: '價格', },
             { field: 'Sales', headerName: '銷量', },
             { field: 'Stock', headerName: '庫存', },
-            { field: 'ImgPath', headerName: '封面圖片', },
+            // { field: 'ImgPath', headerName: '封面圖片', },
             {
                 field: '',
                 headerName: '操作',
@@ -147,19 +164,28 @@ const Bookmanage = () => {
         }
     }, [])
 
+    const base64Split = (base64Str: string) => {
+        return base64Str.toString().split(',')[1]
+    }
+
 
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
+        console.log("上傳")
         const { Id } = selectedBook;
         // console.log(Title, Author, Pyear, Price, Sales, Stock, ImgPath);
         if (action != "deleteAll") {
             if (testEmpty()) return;
             if (testNumber("Pyear") || testNumber("Price") || testNumber("Sales") || testNumber("Stock")) return;
         }
+        const ImgPath = action == "add" ? (base64Pic ? base64Split(base64Pic) : null) :
+            action == "edit" ? (base64Pic ? base64Split(base64Pic) : base64Split(selectedBook.ImgPath ? selectedBook.ImgPath : "")) : null
 
         const body = {
-            ...selectedBook
+            ...selectedBook,
+            ImgPath
         }
+
         const API = {
             edit: () => booksAPI.put(undefined, body),
             add: () => booksAPI.post(body),
@@ -183,6 +209,8 @@ const Bookmanage = () => {
                 open: true
             })
             setOpen(false)
+            // 關閉清除圖片暫存
+            setbase64Pic(null)
             fetchData()
         } else {
             setSnackBar({
@@ -230,7 +258,7 @@ const Bookmanage = () => {
 
     const testEmpty = () => {
         const res: string[] = []
-        Object.keys(selectedBook).forEach(key => {
+        Object.keys(bookKeyChinese).forEach(key => {
             if (selectedBook[key] == "") {
                 res.push(key)
             }
@@ -286,7 +314,11 @@ const Bookmanage = () => {
             </Grid>
             <Modal
                 open={open}
-                onClose={() => setOpen(false)}
+                onClose={() => {
+                    setOpen(false)
+                    // 關閉清除圖片暫存
+                    setbase64Pic(null)
+                }}
                 aria-labelledby="modal-modal-title"
                 aria-describedby="modal-modal-description"
             >
@@ -296,10 +328,16 @@ const Bookmanage = () => {
                             {action == "edit" ? "編輯書籍" : "新增書籍"}
                         </Typography>
                         <Grid container spacing={2}>
+                            {base64Pic ?
+                                <Grid item xs={12}>
+                                    <img src={base64Pic} alt="pic" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: "5px" }} />
+                                </Grid>
+                                :
+                                (selectedBook.ImgPath && <Grid item xs={12}>
+                                    <img src={`${import.meta.env.VITE_API_URL}bookimg/${selectedBook.ImgPath}`} alt="pic" style={{ maxWidth: '200px', maxHeight: '200px', marginTop: "5px" }} />
+                                </Grid>)
+                            }
                             {form}
-                            <Grid item xs={6}>
-
-                            </Grid>
                         </Grid>
                     </>}
 
@@ -323,15 +361,33 @@ const Bookmanage = () => {
                             全部所選籍籍共 : {checkboxSelected.length} 筆
                         </Typography>
                     </>}
-                    <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-                        <Button
-                            sx={{ marginRight: "5px" }}
-                            variant='outlined'
-                            type="submit" color={action == "edit" ? 'info' : 'error'}>確定</Button>
-                        <Button
-                            variant='outlined'
-                            onClick={() => setOpen(false)}>取消</Button>
-                    </Typography>
+                    <div className='flex mt-2 justify-between'>
+                        <div>
+                            <Button
+                                sx={{ marginRight: "5px" }}
+                                variant='outlined'
+                                type="submit" color={action == "edit" ? 'info' : 'error'}>確定</Button>
+                            <Button
+                                variant='outlined'
+                                onClick={() => {
+                                    setOpen(false)
+                                    // 關閉清除圖片暫存
+                                    setbase64Pic(null)
+                                }}>取消</Button>
+                        </div>
+                        {(action == "add" || action == "edit") && <div>
+                            <Button
+                                component="label"
+                                role={undefined}
+                                variant="contained"
+                                tabIndex={-1}
+                                startIcon={<CloudUploadIcon />}
+                            >
+                                圖片上傳
+                                <VisuallyHiddenInput type="file" onChange={handleFileChange} accept="image/jpeg,image/png" />
+                            </Button>
+                        </div>}
+                    </div>
                 </Box>
             </Modal >
         </>

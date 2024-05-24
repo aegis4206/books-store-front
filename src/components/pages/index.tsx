@@ -87,12 +87,14 @@ const Index = () => {
         {bookList.slice((currentPage - 1) * perPage, currentPage * perPage).map(book => <Grid key={book.Id} xs={2} sm={1}>
           <Card sx={{ maxWidth: 345, height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
             <CardActionArea>
-              <CardMedia
-                component="img"
-                height="140"
-                image={`https://source.unsplash.com/200x200/?book&rnd=${book.Id}`}
-                alt={book.Title}
-              />
+              <div className='flex justify-center h-40'>
+                <CardMedia
+                  component="img"
+                  image={book.ImgPath ? `${import.meta.env.VITE_API_URL}bookimg/${book.ImgPath}` : `https://source.unsplash.com/200x200/?book&rnd=${book.Id}`}
+                  alt={book.Title}
+                  sx={{ height: "150px", width: "150px", alignSelf: "center" }}
+                />
+              </div>
               <CardContent>
                 <Typography gutterBottom variant="h5" component="div">
                   {book.Title}

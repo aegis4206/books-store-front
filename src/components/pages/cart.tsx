@@ -8,7 +8,7 @@ import Tables from '../tables'
 
 import { checkboxSelectedAtom } from '../../states/table';
 import { GridColDef } from '@mui/x-data-grid';
-import { Button, Modal, Box, Typography, Chip, Container, Switch, FormControlLabel, Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar,  } from '@mui/material';
+import { Button, Modal, Box, Typography, Chip, Container, Switch, FormControlLabel, Badge, List, ListItem, ListItemAvatar, ListItemText, Avatar, } from '@mui/material';
 import ItemList from '../cart/ItemList';
 
 const style = {
@@ -191,7 +191,7 @@ const Cart = () => {
             return <ListItem sx={{ padding: 0 }} key={cartItemId}>
               <ListItemAvatar>
                 <Avatar>
-                  <img src={`https://source.unsplash.com/40x40/?book&rnd=${cartItemId}`} alt='book'></img>
+                  <img src={cartList[index].Book.ImgPath ? `${import.meta.env.VITE_API_URL}bookimg/${cartList[index].Book.ImgPath}` : `https://source.unsplash.com/40x40/?book&rnd=${cartItemId}`} alt='book'></img>
                 </Avatar>
               </ListItemAvatar>
               <ListItemText primary={`${cartList[index].Book.Title} - ${cartList[index].Book.Author}`}

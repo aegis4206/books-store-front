@@ -184,10 +184,10 @@ const Ordermanage = () => {
                             訂單編號 : {selectedOrder?.OrderId}
                             <List sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
                                 {
-                                    selectedOrder?.OrderItems.map(orderItem => <ListItem sx={{ padding: 0 }} key={orderItem.OrderItemId}>
+                                    selectedOrder?.OrderItems?.map(orderItem => <ListItem sx={{ padding: 0 }} key={orderItem.OrderItemId}>
                                         <ListItemAvatar>
                                             <Avatar>
-                                                <img src={`https://source.unsplash.com/40x40/?book&rnd=${orderItem.OrderItemId}`} alt='book'></img>
+                                                <img src={orderItem.ImgPath ? `${import.meta.env.VITE_API_URL}bookimg/${orderItem.ImgPath}` : `https://source.unsplash.com/40x40/?book&rnd=${orderItem.OrderItemId}`} alt='book'></img>
                                             </Avatar>
                                         </ListItemAvatar>
                                         <ListItemText primary={`${orderItem.BookId} : ${orderItem.Title} - ${orderItem.Author}`}

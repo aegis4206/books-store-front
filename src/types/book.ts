@@ -6,7 +6,7 @@ export const bookKeyChinese = {
     Price: '價格',
     Sales: '銷量',
     Stock: '庫存',
-    ImgPath: '封面圖片',
+    // ImgPath: '封面圖片',
 }
 export interface bookType {
     Id: number | undefined,
@@ -16,6 +16,6 @@ export interface bookType {
     Price: string,
     Sales: string,
     Stock: string,
-    ImgPath: string,
+    ImgPath: string | null,
     [key: string]: unknown | string;
 }

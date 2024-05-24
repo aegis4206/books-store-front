@@ -18,7 +18,7 @@ const OrderItemList = ({ orderList, clickHandle }: propsType) => {
                     <Card sx={{ display: 'flex', width: "auto", height: "120px" }}>
                         <CardMedia
                             component="img"
-                            image={`https://source.unsplash.com/100x100/?book&rnd=${order.OrderItems[0].OrderItemId}`}
+                            image={order.OrderItems?.[0]?.ImgPath ? `${import.meta.env.VITE_API_URL}bookimg/${order.OrderItems?.[0].ImgPath}` : `https://source.unsplash.com/100x100/?book&rnd=${order.OrderItems?.[0].OrderItemId}`}
                             alt={"訂單"}
                             sx={{ width: "100px", height: "100px", alignSelf: "center", marginLeft: "10px" }}
                         />

@@ -10,7 +10,7 @@ export const initBook: bookType = {
     Price: "",
     Sales: "",
     Stock: "",
-    ImgPath: "",
+    ImgPath: null,
 }
 
 export const selectedBookAtom = atom<bookType>(initBook);
